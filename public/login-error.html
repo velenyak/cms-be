@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script>
+      if (window.opener && window.opener.postMessage) {
+        window.opener.postMessage('error', '*')
+      }  
+    </script>
+  </head>
+  <body>
+    SUCCESS <br />
+    <button onclick="self.close()">Close</button>
+  </body>
+</html>
