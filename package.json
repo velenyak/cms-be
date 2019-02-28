@@ -15,7 +15,7 @@
     "lint": "eslint **/*.js --ignore-path .gitignore --ignore-pattern internals/scripts",
     "lint:fix": "eslint --ext .js --ignore-path .gitignore . --fix",
     "test": "jest",
-    "coveralls": "jest --coverage && cat ./coverage/lcov.info | coveralls"
+    "test:coverage": "jest --coverage && cat ./coverage/lcov.info | coveralls"
   },
   "dependencies": {
     "axios": "^0.16.2",
