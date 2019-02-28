@@ -5,10 +5,11 @@ const mongoose = require('./config/mongoose');
 // open mongoose connection
 mongoose.connect();
 
-mongoose.createRoutes(app);
+app.on('ready', () => {
+  // listen to requests
+  app.listen(port, () => console.info(`server started on port ${port} (${env})`));
+});
 
-// listen to requests
-app.listen(port, () => console.info(`server started on port ${port} (${env})`));
 
 /**
 * Exports express

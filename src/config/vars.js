@@ -9,7 +9,7 @@ require('dotenv-safe').load({
 module.exports = {
   env: process.env.NODE_ENV,
   port: process.env.PORT,
-  public: path.join(__dirname, '../../public'),
+  publicDir: path.join(__dirname, '../../public'),
   defaultTypes: ['string', 'number', 'boolean', 'date', 'buffer'],
   mongo: {
     uri: process.env.MONGO_URI

@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
-const restful = require('node-restful');
 const _ = require('lodash');
 const express = require('express');
 const restify = require('express-restify-mongoose');
 
-const schemaGenerator = require('../utils/SchemaGenerator')();
+const schemaGenerator = require('../utils/SchemaGenerator');
 const { defaultTypes } = require('../../config/vars');
+const app = require('../../config/express');
 
 const schemaMeta = new mongoose.Schema({
   name: {
@@ -42,35 +42,32 @@ const schemaMeta = new mongoose.Schema({
 
 schemaMeta.path('methods').validate((methods) => {
   const availableMethods = ['post', 'put', 'delete'];
-  let invalidMethods = methods.map(method => {
-    if (!availableMethods.includes(method)) {
-      return method;
-    }
-  })
-  return invalidMethods.length > 0;
-})
+  return _.pullAll(availableMethods, methods).length;
+});
 
 schemaMeta.pre('save', function (next) {
-  this.fields.map(f => {
-    f.ownRef = !defaultTypes.includes(f.type.toLowerCase());
-  })
+  const doc = this;
+  doc.fields = doc.fields.map(field => ({
+    ...field,
+    ownRef: !defaultTypes.includes(field.type.toLowerCase())
+  }));
   next();
-})
+});
 
 schemaMeta.post('save', (doc) => {
-  let schema = schemaGenerator.getSchemaFromMeta(doc);
+  const schema = schemaGenerator.getSchemaFromMeta(doc);
   try {
     const router = express.Router();
-    restify.serve(router, mongoose.model(doc.name, schema), {})
-    const app = require('../../config/express');
-    app.use(router)
+    restify.serve(router, mongoose.model(doc.name, schema), {});
+    // const app = require('../../config/express');
+    app.use(router);
   } catch (e) {
     console.error(e);
     doc.remove((err) => {
       console.log(err);
-    })
+    });
   }
-})
+});
 
 const SchemaMeta = mongoose.model('SchemaMeta', schemaMeta);
 module.exports = SchemaMeta;

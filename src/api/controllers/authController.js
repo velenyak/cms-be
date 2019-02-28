@@ -1,51 +1,28 @@
 const jwt = require('jsonwebtoken');
-const FB = require('fb');
 const { OAuth2Client } = require('google-auth-library');
 const _ = require('lodash');
 const bcrypt = require('bcrypt');
 
-const { auth } = require('../config/vars');
-const User = require('../models/User');
+const { auth } = require('../../config/vars');
+const User = require('../models/user');
 
-const googleClient = new OAuth2Client(auth.google.clientIdIos);
+const googleClient = new OAuth2Client(auth.google.client_id);
 
 const signToken = user => jwt.sign(
   { user },
-  process.env.SECRET,
-  { expiresIn: '7d' },
+  auth.jwt.secret,
+  { expiresIn: auth.jwt.expiration },
 );
-
-exports.facebookLogin = async (req, res) => {
-  try {
-    const me = await FB.api('me', { fields: ['id', 'name'], access_token: req.body.accessToken });
-    let user = await User.findOne({ fbId: me.id });
-    if (!user) {
-      user = new User({
-        fbId: me.id,
-        name: {
-          fullName: me.name,
-          userName: _.camelCase(me.name)
-        },
-        image: `https://graph.facebook.com/${me.id}/picture?type=large&width=720&height=720`
-      });
-      user = await user.save();
-    }
-    const token = signToken(_.pick(user, ['_id', 'email', 'name', 'roles']));
-    return res.status(201).send({ user: _.omit(user, ['password', 'deviceToken']), token });
-  } catch (e) {
-    return res.status(500).send(e.message);
-  }
-};
 
 exports.googleLogin = async (req, res) => {
   try {
     const ticket = await googleClient.verifyIdTokenAsync({
       idToken: req.body.accessToken,
-      audience: [auth.google.clientIdAndroid, auth.google.clientIdIos]
+      audience: auth.google.client_id
     });
     const payload = ticket.getPayload();
     const googleId = payload.sub;
-    let user = await User.findOne({ googleId });
+    let user = await User.findOne({ email: payload.email });
     if (!user) {
       user = new User({
         googleId,
