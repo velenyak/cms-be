@@ -14,7 +14,8 @@
     "dev": "cross-env NODE_ENV=development nodemon ./src/index.js",
     "lint": "eslint **/*.js --ignore-path .gitignore --ignore-pattern internals/scripts",
     "lint:fix": "eslint --ext .js --ignore-path .gitignore . --fix",
-    "test": "jest"
+    "test": "jest",
+    "coveralls": "jest --coverage && cat ./tests/coverage/lcov.info | coveralls"
   },
   "dependencies": {
     "axios": "^0.16.2",
@@ -54,7 +55,7 @@
     "apidoc": "^0.17.7",
     "chai": "^4.1.0",
     "chai-as-promised": "^7.1.1",
-    "coveralls": "^3.0.0",
+    "coveralls": "^3.0.3",
     "eslint": "^4.2.0",
     "eslint-config-airbnb-base": "^12.0.1",
     "eslint-plugin-import": "^2.16.0",
