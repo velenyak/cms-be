@@ -27,3 +27,5 @@ exports.getSchemaFromMeta = (meta) => {
   const mongooseSchema = new mongoose.Schema(schema, { strict: false });
   return mongooseSchema;
 };
+
+exports.add = numbers => _.reduce(numbers, (sum, n) => sum + n, 0);
