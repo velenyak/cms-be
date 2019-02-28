@@ -9,12 +9,15 @@
   },
   "env": {
     "node": true,
-    "mocha": true
+    "jest/globals": true
   },
   "parserOptions": {
     "ecmaVersion": 8
   },
   "extends": [
     "airbnb-base"
+  ],
+  "plugins": [
+    "jest"
   ]
 }

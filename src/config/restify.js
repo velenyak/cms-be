@@ -4,7 +4,7 @@ const passport = require('passport');
 const moment = require('moment');
 const mongoose = require('mongoose');
 
-const schemaGenerator = require('../api/utils/SchemaGenerator');
+const schemaGenerator = require('../api/utils/schemaGenerator');
 
 const User = require('../api/models/user');
 const SchemaMeta = require('../api/models/schemaMeta');

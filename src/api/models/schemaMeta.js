@@ -3,7 +3,7 @@ const _ = require('lodash');
 const express = require('express');
 const restify = require('express-restify-mongoose');
 
-const schemaGenerator = require('../utils/SchemaGenerator');
+const schemaGenerator = require('../utils/schemaGenerator');
 const { defaultTypes } = require('../../config/vars');
 const app = require('../../config/express');
 
