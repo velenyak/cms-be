@@ -4,7 +4,7 @@ const _ = require('lodash');
 const bcrypt = require('bcrypt');
 
 const { auth } = require('../../config/vars');
-const User = require('../models/user');
+const User = require('../models/User');
 
 const googleClient = new OAuth2Client(auth.google.client_id);
 

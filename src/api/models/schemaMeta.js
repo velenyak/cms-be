@@ -7,7 +7,7 @@ const schemaGenerator = require('../utils/schemaGenerator');
 const { defaultTypes } = require('../../config/vars');
 const app = require('../../config/express');
 
-const schemaMeta = new mongoose.Schema({
+const schemaMetaSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -40,12 +40,12 @@ const schemaMeta = new mongoose.Schema({
   methods: [{ type: String }]
 });
 
-schemaMeta.path('methods').validate((methods) => {
+schemaMetaSchema.path('methods').validate((methods) => {
   const availableMethods = ['post', 'put', 'delete'];
   return _.pullAll(availableMethods, methods).length;
 });
 
-schemaMeta.pre('save', function (next) {
+schemaMetaSchema.pre('save', function (next) {
   const doc = this;
   doc.fields = doc.fields.map(field => ({
     ...field,
@@ -54,7 +54,7 @@ schemaMeta.pre('save', function (next) {
   next();
 });
 
-schemaMeta.post('save', (doc) => {
+schemaMetaSchema.post('save', (doc) => {
   const schema = schemaGenerator.getSchemaFromMeta(doc);
   try {
     const router = express.Router();
@@ -69,5 +69,4 @@ schemaMeta.post('save', (doc) => {
   }
 });
 
-const SchemaMeta = mongoose.model('SchemaMeta', schemaMeta);
-module.exports = SchemaMeta;
+module.exports = mongoose.model('SchemaMeta', schemaMetaSchema);

@@ -6,8 +6,8 @@ const mongoose = require('mongoose');
 
 const schemaGenerator = require('../api/utils/schemaGenerator');
 
-const User = require('../api/models/user');
-const SchemaMeta = require('../api/models/schemaMeta');
+const User = require('../api/models/User');
+const SchemaMeta = require('../api/models/SchemaMeta');
 
 const addRoutes = async (app, router) => {
   // Define defaults for restify

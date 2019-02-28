@@ -2,7 +2,7 @@ const _ = require('lodash');
 const passport = require('passport');
 const { ExtractJwt, Strategy: JwtStrategy } = require('passport-jwt');
 
-const User = require('../api/models/user');
+const User = require('../api/models/User');
 const { auth } = require('./vars');
 
 passport.serializeUser((user, done) => {

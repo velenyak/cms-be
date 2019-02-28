@@ -1,6 +1,6 @@
 const express = require('express');
 
-const SchemaMeta = require('../models/schemaMeta');
+const SchemaMeta = require('../models/SchemaMeta');
 
 const router = express.Router();
 
