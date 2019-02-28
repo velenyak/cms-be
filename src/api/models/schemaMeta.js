@@ -4,8 +4,7 @@ const express = require('express');
 const restify = require('express-restify-mongoose');
 
 const schemaGenerator = require('../utils/schemaGenerator');
-const { defaultTypes } = require('../../config/vars');
-const app = require('../../config/express');
+// const app = require('../../config/express');
 
 const schemaMetaSchema = new mongoose.Schema({
   name: {
@@ -51,7 +50,7 @@ schemaMetaSchema.pre('save', function (next) {
   doc.fields = doc.fields.map(field => ({
     ...field,
     typeOf: _.lowerCase(field.typeOf),
-    ownRef: !defaultTypes.includes(field.type.toLowerCase())
+    ownRef: !schemaMetaSchema.path('fields').schema.path('typeOf').enumValues.includes(field.type.toLowerCase())
   }));
   next();
 });
@@ -63,7 +62,7 @@ schemaMetaSchema.post('save', (doc) => {
     const router = express.Router();
     restify.serve(router, mongoose.model(_.upperFirst(doc.name), schema), {});
     // const app = require('../../config/express');
-    app.use(router);
+    // app.use(router);
   } catch (e) {
     console.error(e);
     doc.remove((err) => {
