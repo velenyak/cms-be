@@ -1,31 +1,40 @@
 const mongoose = require('mongoose');
 const _ = require('lodash');
 
-const getFieldData = ({ type, isArray, options }) => {
-  const defaultTypes = ['string', 'number', 'boolean', 'date', 'buffer'];
-  if (defaultTypes.includes(type.toLowerCase())) {
-    return isArray
-      ? { type: [type.toLowerCase()], ...options }
-      : { type: type.toLowerCase(), ...options };
-  }
-  return {
-    type: isArray
-      ? [mongoose.Schema.Types.ObjectId]
-      : mongoose.Schema.Types.ObjectId,
-    ref: type,
-    ...options
-  };
-};
+const SchemaMeta = require('../models/SchemaMeta');
 
-exports.getFieldData = getFieldData;
+const getDefaultTypes = () => SchemaMeta.schema.path('fields').schema.path('typeOf').enumValues;
 
-exports.getSchemaFromMeta = (meta) => {
+const isDefaultType = type => _.includes(getDefaultTypes(), _.lowerCase(type));
+
+const convertDefaultFieldType = (type, isArray, options) => isArray
+  ? ({ type: [type.toLowerCase()], ...options })
+  : ({ type: type.toLowerCase(), ...options });
+
+const convertMongooseFieldType = (type, isArray, options, schemaName) => isArray
+  ? ({ type: [mongoose.Schema.Types.ObjectId], ref: _.upperFirst(schemaName), ...options })
+  : ({ type: mongoose.Schema.Types.ObjectId, ref: _.upperFirst(schemaName), ...options });
+
+const getFieldData = ({ type, isArray, options }, schemaName) => isDefaultType(type)
+  ? convertDefaultFieldType(type, isArray, options)
+  : convertMongooseFieldType(type, isArray, options, schemaName);
+
+const createMongooseSchema = schema => new mongoose.Schema(schema, { strict: false });
+
+const getSchemaFromMeta = (meta) => {
   const schema = {};
   meta.fields.forEach((field) => {
-    _.set(schema, _.camelCase(field.name), getFieldData(field));
+    _.set(schema, _.camelCase(field.name), getFieldData(field, meta.name));
   });
-  const mongooseSchema = new mongoose.Schema(schema, { strict: false });
-  return mongooseSchema;
+  return createMongooseSchema(schema);
 };
 
-exports.add = numbers => _.reduce(numbers, (sum, n) => sum + n, 0);
+module.exports = {
+  getDefaultTypes,
+  isDefaultType,
+  convertDefaultFieldType,
+  convertMongooseFieldType,
+  getFieldData,
+  getSchemaFromMeta,
+  createMongooseSchema
+};

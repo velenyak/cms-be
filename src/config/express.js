@@ -51,6 +51,7 @@ app.use(helmet());
 // passport use google strategy
 passport.use(jwt);
 
+// Register routes to restify
 restify.addRoutes(app, router);
 
 // enable authentication

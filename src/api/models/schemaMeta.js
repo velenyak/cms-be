@@ -21,9 +21,10 @@ const schemaMetaSchema = new mongoose.Schema({
       required: true,
       set: _.camelCase
     },
-    type: {
+    typeOf: {
       type: String,
-      required: true
+      required: true,
+      enum: ['string', 'number', 'boolean', 'date', 'buffer']
     },
     ownRef: {
       type: Boolean,
@@ -49,16 +50,18 @@ schemaMetaSchema.pre('save', function (next) {
   const doc = this;
   doc.fields = doc.fields.map(field => ({
     ...field,
+    typeOf: _.lowerCase(field.typeOf),
     ownRef: !defaultTypes.includes(field.type.toLowerCase())
   }));
   next();
 });
 
+// TODO: Register new routes in some other way
 schemaMetaSchema.post('save', (doc) => {
   const schema = schemaGenerator.getSchemaFromMeta(doc);
   try {
     const router = express.Router();
-    restify.serve(router, mongoose.model(doc.name, schema), {});
+    restify.serve(router, mongoose.model(_.upperFirst(doc.name), schema), {});
     // const app = require('../../config/express');
     app.use(router);
   } catch (e) {
