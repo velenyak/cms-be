@@ -35,7 +35,7 @@ exports.googleLogin = async (req, res) => {
       });
       user = await user.save();
     }
-    const token = signToken(_.pick(user, ['_id', 'email', 'name', 'roles']));
+    const token = signToken(_.pick(user, ['_id']));
     return res.status(201).send({ user: _.omit(user, ['password', 'deviceToken']), token });
   } catch (e) {
     console.error('Error verifying google token', e);
@@ -50,7 +50,7 @@ exports.localLogin = async (req, res, next) => {
   if (!user) return res.status(404).send('User not found');
   const match = await bcrypt.compare(req.body.password, user.password);
   if (match) {
-    const token = signToken(_.pick(user, ['_id', 'email', 'name', 'roles']));
+    const token = signToken(_.pick(user, ['_id']));
     user.password = undefined;
     return res.status(200).send({ user, token });
   }
@@ -81,12 +81,13 @@ exports.register = async (req, res, next) => {
 
 exports.refreshToken = async (req, res, next) => {
   let token = req.headers.authorization;
+  console.log('token', req.headers, token);
   try {
-    token = jwt.verify(token, process.env.SECRET, { ignoreExpiration: true });
+    token = jwt.verify(token.replace('Bearer ', ''), auth.jwt.secret, { ignoreExpiration: true });
     const userId = _.get(token, 'user._id');
     if (userId) {
       const currentUser = await User.findById(userId);
-      token = signToken(_.pick(currentUser, ['_id', 'email', 'name', 'roles']));
+      token = signToken(_.pick(currentUser, ['_id']));
       delete currentUser.password;
       return res.status(200).send({ user: currentUser, token });
     }

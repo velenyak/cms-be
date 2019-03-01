@@ -16,7 +16,7 @@ passport.deserializeUser((id, done) => {
 });
 
 const jwtOptions = {
-  jwtFromRequest: ExtractJwt.fromHeader('authorization'),
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey: auth.jwt.secret
 };
 
