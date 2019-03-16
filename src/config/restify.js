@@ -47,7 +47,6 @@ const addRoutes = async (app, router) => {
     const metas = await SchemaMeta.find({}).lean();
     metas.forEach((meta) => {
       const schema = schemaGenerator.getSchemaFromMeta(meta);
-      console.log('Schema', schema);
       const model = mongoose.model(meta.name, schema);
       const options = {
         preRead: async (req, res, next) => {
