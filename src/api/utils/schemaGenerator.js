@@ -1,9 +1,7 @@
 const mongoose = require('mongoose');
 const _ = require('lodash');
 
-const SchemaMeta = require('../models/SchemaMeta');
-
-const getDefaultTypes = () => SchemaMeta.schema.path('fields').schema.path('typeOf').enumValues;
+const getDefaultTypes = () => (['string', 'number', 'boolean', 'date', 'buffer']);
 
 const isDefaultType = type => _.includes(getDefaultTypes(), _.lowerCase(type));
 
@@ -15,9 +13,9 @@ const convertMongooseFieldType = (type, isArray, options, schemaName) => isArray
   ? ({ type: [mongoose.Schema.Types.ObjectId], ref: _.upperFirst(schemaName), ...options })
   : ({ type: mongoose.Schema.Types.ObjectId, ref: _.upperFirst(schemaName), ...options });
 
-const getFieldData = ({ type, isArray, options }, schemaName) => isDefaultType(type)
-  ? convertDefaultFieldType(type, isArray, options)
-  : convertMongooseFieldType(type, isArray, options, schemaName);
+const getFieldData = ({ typeOf, isArray, options }, schemaName) => isDefaultType(typeOf)
+  ? convertDefaultFieldType(typeOf, isArray, options)
+  : convertMongooseFieldType(typeOf, isArray, options, schemaName);
 
 const createMongooseSchema = schema => new mongoose.Schema(schema, { strict: false });
 

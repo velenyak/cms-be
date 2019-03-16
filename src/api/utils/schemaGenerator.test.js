@@ -27,27 +27,27 @@ describe('Schema Generator - isDefaultType', () => {
 
 describe('Schema Generator - getFieldData', () => {
   it('Return mongoose schema object from field simple data', () => {
-    expect(schemaGenerator.getFieldData({ type: 'String', isArray: false, options: {} }))
+    expect(schemaGenerator.getFieldData({ typeOf: 'String', isArray: false, options: {} }))
       .toEqual({ type: 'string' });
   });
   it('Return mongoose schema object from field simple array type data', () => {
-    expect(schemaGenerator.getFieldData({ type: 'String', isArray: true, options: {} }))
+    expect(schemaGenerator.getFieldData({ typeOf: 'String', isArray: true, options: {} }))
       .toEqual({ type: ['string'] });
   });
   it('Return mongoose schema object from field that references other collection', () => {
-    expect(schemaGenerator.getFieldData({ type: 'Car', isArray: false, options: {} }, 'Car'))
+    expect(schemaGenerator.getFieldData({ typeOf: 'Car', isArray: false, options: {} }, 'Car'))
       .toEqual({ type: mongoose.Schema.Types.ObjectId, ref: 'Car' });
   });
   it('Return mongoose schema object from field that references other collection with correct name', () => {
-    expect(schemaGenerator.getFieldData({ type: 'person', isArray: false, options: {} }, 'person'))
+    expect(schemaGenerator.getFieldData({ typeOf: 'person', isArray: false, options: {} }, 'person'))
       .toEqual({ type: mongoose.Schema.Types.ObjectId, ref: 'Person' });
   });
   it('Return mongoose schema object from field that references other collection in array', () => {
-    expect(schemaGenerator.getFieldData({ type: 'person', isArray: true, options: {} }, 'Person'))
+    expect(schemaGenerator.getFieldData({ typeOf: 'person', isArray: true, options: {} }, 'Person'))
       .toEqual({ type: [mongoose.Schema.Types.ObjectId], ref: 'Person' });
   });
   it('Return mongoose schema object from field containing options', () => {
-    expect(schemaGenerator.getFieldData({ type: 'String', isArray: false, options: { required: true, enum: ['a', 'b', 'c'] } }))
+    expect(schemaGenerator.getFieldData({ typeOf: 'String', isArray: false, options: { required: true, enum: ['a', 'b', 'c'] } }))
       .toEqual({ type: 'string', required: true, enum: ['a', 'b', 'c'] });
   });
 });
@@ -58,10 +58,10 @@ describe('Schema Generator - getSchemaFromMeta', () => {
       name: 'Car',
       fields: [
         {
-          name: 'name', type: 'String', ownRef: false, options: { required: true }
+          name: 'name', typeOf: 'String', ownRef: false, options: { required: true }
         },
-        { name: 'model', type: 'String', ownRef: false },
-        { name: 'makeYear', type: 'Number', ownRef: false }
+        { name: 'model', typeOf: 'String', ownRef: false },
+        { name: 'makeYear', typeOf: 'Number', ownRef: false }
       ]
     };
     const mongooseSchema = mongoose.Schema(
