@@ -81,7 +81,6 @@ exports.register = async (req, res, next) => {
 
 exports.refreshToken = async (req, res, next) => {
   let token = req.headers.authorization;
-  console.log('token', req.headers, token);
   try {
     token = jwt.verify(token.replace('Bearer ', ''), auth.jwt.secret, { ignoreExpiration: true });
     const userId = _.get(token, 'user._id');
