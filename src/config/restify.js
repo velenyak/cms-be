@@ -47,6 +47,8 @@ const addRoutes = async (app, router) => {
     const metas = await SchemaMeta.find({}).lean();
     metas.forEach((meta) => {
       const schema = schemaGenerator.getSchemaFromMeta(meta);
+      console.log('Schema', schema);
+      const model = mongoose.model(meta.name, schema);
       const options = {
         preRead: async (req, res, next) => {
           // if (req.query.populate) {
@@ -62,11 +64,11 @@ const addRoutes = async (app, router) => {
           next();
         }
       };
-      restify.serve(router, mongoose.model(meta.name, schema), options);
+      restify.serve(router, model, options);
     });
     app.emit('ready');
   } catch (e) {
-    console.error('Error retrieving schemas');
+    console.error('Error retrieving schemas', e);
   }
 };
 

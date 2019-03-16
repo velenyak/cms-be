@@ -1,11 +1,20 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const _ = require('lodash');
 
 const userSchema = new mongoose.Schema({
   googleId: String,
   name: {
-    userName: String,
-    fullName: String
+    userName: {
+      type: String,
+      default() {
+        return _.camelCase(this.name.fullName);
+      }
+    },
+    fullName: {
+      type: String,
+      required: true
+    }
   },
   email: {
     type: String,

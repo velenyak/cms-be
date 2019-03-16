@@ -59,7 +59,7 @@ app.use(passport.initialize());
 // app.use(passport.session());
 
 // mount api v1 routes
+app.use(router);
 app.use(routes);
-
 
 module.exports = app;
