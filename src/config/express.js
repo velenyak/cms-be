@@ -48,18 +48,18 @@ app.use(methodOverride());
 // secure apps by setting various HTTP headers
 app.use(helmet());
 
-// passport use google strategy
 passport.use(jwt);
-
-// Register routes to restify
-restify.addRoutes(app, router);
-
 // enable authentication
 app.use(passport.initialize());
 // app.use(passport.session());
 
+// Register routes to restify
+restify.addRoutes(app, router);
+
+
 // mount api v1 routes
 app.use(router);
+// mount our own routes
 app.use(routes);
 
 module.exports = app;

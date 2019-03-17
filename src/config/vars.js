@@ -20,7 +20,7 @@ module.exports = {
     },
     jwt: {
       secret: process.env.JWT_SECRET,
-      expiration: process.env.JWT_EXPIRATION_MINUTES
+      expiration: process.env.JWT_EXPIRATION_DAYS
     }
   },
   logs: process.env.NODE_ENV === 'production' ? 'combined' : 'dev',

@@ -5,13 +5,14 @@ const restify = require('express-restify-mongoose');
 
 const SchemaMeta = require('../models/SchemaMeta');
 const schemaGenerator = require('../utils/schemaGenerator');
-
+const acl = require('../middlewares/acl');
 
 const router = express.Router();
 
-router.post('/', async (req, res, next) => {
+router.post('/', acl.checkRoleWithPassport(['user']), async (req, res, next) => {
   try {
     const schema = req.body;
+    schema.owner = req.user._id;
     const schemaMeta = new SchemaMeta(schema);
     const saved = await schemaMeta.save();
     const savedSchema = schemaGenerator.getSchemaFromMeta(saved);
@@ -23,7 +24,7 @@ router.post('/', async (req, res, next) => {
   }
 });
 
-router.get('/', async (req, res, next) => {
+router.get('/', acl.checkRoleWithPassport(['user']), async (req, res, next) => {
   try {
     const metas = await SchemaMeta.find({});
     return res.status(200).send(metas);

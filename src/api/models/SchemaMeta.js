@@ -1,3 +1,4 @@
+/* eslint-disable func-names */
 const mongoose = require('mongoose');
 const _ = require('lodash');
 
@@ -5,8 +6,11 @@ const schemaMetaSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    index: true,
-    unique: true
+    index: true
+  },
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
   },
   fields: [{
     _id: false,
@@ -33,13 +37,11 @@ const schemaMetaSchema = new mongoose.Schema({
       default: {}
     }
   }],
-  methods: [{ type: String }]
+  methods: {
+    type: [String],
+    enum: ['GET', 'POST', 'PATCH', 'DELETE']
+  }
 });
-
-// schemaMetaSchema.path('methods').validate((methods) => {
-//   const availableMethods = ['get', 'post', 'put', 'delete'];
-//   return _.pullAll(availableMethods, methods).length;
-// });
 
 schemaMetaSchema.pre('validate', function (next) {
   const doc = this;
@@ -50,6 +52,7 @@ schemaMetaSchema.pre('validate', function (next) {
     isArray: field.isArray,
     options: field.options
   }));
+  doc.methods = _.map(doc.methods, m => _.upperCase(m));
   next();
 });
 

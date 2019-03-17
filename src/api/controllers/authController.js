@@ -11,7 +11,7 @@ const googleClient = new OAuth2Client(auth.google.client_id);
 const signToken = user => jwt.sign(
   { user },
   auth.jwt.secret,
-  { expiresIn: auth.jwt.expiration },
+  { expiresIn: `${auth.jwt.expiration}d` },
 );
 
 exports.googleLogin = async (req, res) => {

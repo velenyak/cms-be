@@ -18,6 +18,8 @@
     "test:coverage": "jest --coverage && cat ./coverage/lcov.info | coveralls"
   },
   "dependencies": {
+    "@casl/ability": "^3.0.1",
+    "@casl/mongoose": "^2.3.1",
     "axios": "^0.16.2",
     "bcrypt": "^3.0.4",
     "body-parser": "^1.18.3",
@@ -37,7 +39,7 @@
     "mongoose": "^5.4.16",
     "morgan": "^1.9.1",
     "passport": "^0.4.0",
-    "passport-jwt": "3.0.0",
+    "passport-jwt": "4.0.0",
     "require-all": "^3.0.0"
   },
   "devDependencies": {

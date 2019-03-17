@@ -21,7 +21,6 @@ const jwtOptions = {
 };
 
 const jwtStrategy = new JwtStrategy(jwtOptions, async (jwtPayload, next) => {
-  // console.log(`Payload recieved: ${jwtPayload}`);
   const userId = _.get(jwtPayload, 'user._id');
   const user = await User.findById(userId);
   if (user) {
