@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
+const { accessibleRecordsPlugin } = require('@casl/mongoose');
+
 const { mongo, env } = require('./vars');
 
+mongoose.plugin(accessibleRecordsPlugin);
 mongoose.Promise = global.Promise;
 
 // Exit application on error

@@ -1,16 +1,18 @@
 /* eslint-disable func-names */
 const mongoose = require('mongoose');
+const mongooseDelete = require('mongoose-delete');
+const { accessibleRecordsPlugin } = require('@casl/mongoose');
 const _ = require('lodash');
 
 const schemaMetaSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
-    index: true
+    required: true
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'User',
+    required: true
   },
   fields: [{
     _id: false,
@@ -41,7 +43,14 @@ const schemaMetaSchema = new mongoose.Schema({
     type: [String],
     enum: ['GET', 'POST', 'PATCH', 'DELETE']
   }
+}, {
+  timestamps: true
 });
+
+schemaMetaSchema.plugin(mongooseDelete, { deletedAt: true, overrideMethods: true });
+schemaMetaSchema.plugin(accessibleRecordsPlugin);
+
+schemaMetaSchema.index({ name: 1, owner: 1 }, { unique: true });
 
 schemaMetaSchema.pre('validate', function (next) {
   const doc = this;
