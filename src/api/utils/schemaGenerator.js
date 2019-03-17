@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const _ = require('lodash');
+const { accessibleRecordsPlugin } = require('@casl/mongoose');
 
 const getDefaultTypes = () => (['string', 'number', 'boolean', 'date', 'buffer']);
 
@@ -17,7 +18,11 @@ const getFieldData = ({ typeOf, isArray, options }, schemaName) => isDefaultType
   ? convertDefaultFieldType(typeOf, isArray, options)
   : convertMongooseFieldType(typeOf, isArray, options, schemaName);
 
-const createMongooseSchema = schema => new mongoose.Schema(schema, { strict: false });
+const createMongooseSchema = (schema) => {
+  const savedSchema = new mongoose.Schema(schema, { strict: false });
+  savedSchema.plugin(accessibleRecordsPlugin);
+  return savedSchema;
+};
 
 const getSchemaFromMeta = (meta) => {
   const schema = {};

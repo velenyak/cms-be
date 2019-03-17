@@ -1,21 +1,23 @@
 const express = require('express');
-const _ = require('lodash');
-const mongoose = require('mongoose');
-const restify = require('express-restify-mongoose');
 
 const SchemaMeta = require('../models/SchemaMeta');
 const schemaGenerator = require('../utils/schemaGenerator');
-
-const router = express.Router();
+const schemaRestify = require('../utils/schemaRestify');
 
 exports.createSchema = async (req, res, next) => {
   try {
     const schema = req.body;
-    schema.owner = req.user._id;
+    schema.owners = [req.user._id];
     const schemaMeta = new SchemaMeta(schema);
     const saved = await schemaMeta.save();
     const savedSchema = schemaGenerator.getSchemaFromMeta(saved);
-    restify.serve(router, mongoose.model(_.upperFirst(saved.name), savedSchema), {});
+    schemaRestify.addRestifyRoutes(
+      {
+        meta: saved,
+        schema: savedSchema
+      },
+      express.Router()
+    );
     return res.status(201).send(saved);
   } catch (e) {
     console.error('Error creating schema', e);

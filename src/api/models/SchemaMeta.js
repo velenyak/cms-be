@@ -7,12 +7,18 @@ const _ = require('lodash');
 const schemaMetaSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
-  owner: {
-    type: mongoose.Schema.Types.ObjectId,
+  owners: {
+    type: [mongoose.Schema.Types.ObjectId],
     ref: 'User',
-    required: true
+    required: true,
+  },
+  editors: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: 'User',
+    default: []
   },
   fields: [{
     _id: false,
