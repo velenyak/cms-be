@@ -63,7 +63,7 @@ schemaMetaSchema.pre('validate', function (next) {
   doc.fields = doc.fields.map(field => ({
     name: field.name,
     typeOf: _.lowerCase(field.typeOf),
-    ownRef: !schemaMetaSchema.path('fields').schema.path('typeOf').enumValues.includes(_.lowerCase(field.typeOf)),
+    ownRef: !['string', 'number', 'boolean', 'date', 'buffer'].includes(_.lowerCase(field.typeOf)),
     isArray: field.isArray,
     options: field.options
   }));
