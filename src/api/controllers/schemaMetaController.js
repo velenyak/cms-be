@@ -1,5 +1,3 @@
-const express = require('express');
-
 const SchemaMeta = require('../models/SchemaMeta');
 const schemaGenerator = require('../utils/schemaGenerator');
 const schemaRestify = require('../utils/schemaRestify');
@@ -16,7 +14,7 @@ exports.createSchema = async (req, res, next) => {
         meta: saved,
         schema: savedSchema
       },
-      express.Router()
+      req.app
     );
     return res.status(201).send(saved);
   } catch (e) {
